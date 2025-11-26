@@ -1,635 +1,760 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Home, 
-  HelpCircle, 
-  ClipboardList, 
-  Shield, 
-  CheckSquare, 
-  Calculator, 
-  Search, 
-  Users, 
-  FileText, 
-  HardHat, 
-  Eye, 
-  HandMetal, 
-  Lock, 
-  PenTool, 
-  GraduationCap, 
-  Clock, 
-  Wrench, 
-  AlertTriangle, 
-  Globe, 
-  MessageCircle,
-  Info,
-  Download,
-  FileDown,
-  ExternalLink,
-  Calendar,
-  XCircle,
-  UserX,
-  Briefcase
-} from 'lucide-react';
-
-const App = () => {
-    const [activeTab, setActiveTab] = useState('inicio');
-    const [workersCount, setWorkersCount] = useState('');
-    const [delegatesResult, setDelegatesResult] = useState(null);
-
-    const logoUrl = "https://assets.poap.xyz/f7d50791-1f25-47f7-978c-b2c9fd7ad13d.png";
-
-    // Lógica de cálculo según LOPCYMAT Art. 41
-    const calculateDelegates = (n) => {
-        const num = parseInt(n);
-        if (!num || num <= 0) return 0;
-        if (num <= 10) return 1;
-        if (num <= 50) return 2;
-        if (num <= 250) return 3;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Movida de SST - Delegados de Prevención</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Fuentes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
         
-        // De 251 en adelante: 1 adicional por cada 500 o fracción
-        const base = 3;
-        const remaining = num - 250;
-        const additional = Math.ceil(remaining / 500);
-        return base + additional;
-    };
-
-    useEffect(() => {
-        setDelegatesResult(calculateDelegates(workersCount));
-    }, [workersCount]);
-
-    const renderContent = () => {
-        switch(activeTab) {
-            case 'inicio':
-                return <HomeSection setActiveTab={setActiveTab} />;
-            case 'que-son':
-                return <DefinitionSection />;
-            case 'no-es':
-                return <NotDelegateSection />;
-            case 'funciones':
-                return <FunctionsSection />;
-            case 'cronograma':
-                return <ScheduleSection />;
-            case 'derechos':
-                return <RightsSection />;
-            case 'elecciones':
-                return <ElectionSection />;
-            case 'calculadora':
-                return (
-                    <div className="max-w-4xl mx-auto animate-fade-in">
-                        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Calculadora de Delegados</h2>
-                        <div className="bg-white rounded-2xl shadow-xl p-8 text-center border-t-8 border-[#00b050]">
-                            <div className="mb-8">
-                                <label className="block text-gray-700 text-lg font-semibold mb-2">
-                                    Ingrese el número total de trabajadores en el centro de trabajo:
-                                </label>
-                                <input 
-                                    type="number" 
-                                    value={workersCount}
-                                    onChange={(e) => setWorkersCount(e.target.value)}
-                                    className="w-full max-w-xs px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#00b050] focus:ring-2 focus:ring-[#00b050]/20 focus:outline-none text-3xl text-center mx-auto block transition-all font-bold text-[#00b050]"
-                                    placeholder="0"
-                                    min="1"
-                                />
-                            </div>
-                            
-                            {workersCount > 0 && (
-                                <div className="bg-[#e6f7ee] p-8 rounded-xl border border-[#00b050]/30 animate-pulse shadow-inner">
-                                    <p className="text-gray-600 mb-2 text-lg">Según el Artículo 41 de la LOPCYMAT, corresponden:</p>
-                                    <div className="text-7xl font-extrabold text-[#00b050] mb-2">{delegatesResult}</div>
-                                    <p className="text-2xl text-gray-800 font-medium">Delegados(as) de Prevención</p>
-                                </div>
-                            )}
-
-                            <div className="mt-10 text-left bg-gray-50 p-6 rounded-xl text-sm text-gray-600 border border-gray-200">
-                                <h4 className="font-bold mb-3 text-[#00b050] text-lg border-b border-gray-200 pb-2">Regla legal (Art. 41 LOPCYMAT):</h4>
-                                <ul className="list-disc list-inside space-y-2 marker:text-[#00b050] text-base">
-                                    <li>Hasta 10 trabajadores: <span className="font-semibold">1 Delegado.</span></li>
-                                    <li>De 11 a 50 trabajadores: <span className="font-semibold">2 Delegados.</span></li>
-                                    <li>De 51 a 250 trabajadores: <span className="font-semibold">3 Delegados.</span></li>
-                                    <li>De 251 en adelante: <span className="font-semibold">1 adicional por cada 500 o fracción.</span></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                );
-            default:
-                return <HomeSection setActiveTab={setActiveTab} />;
+        /* Animación personalizada Fade In */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-    };
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
 
-    return (
-        <div className="min-h-screen flex flex-col bg-slate-50 font-sans text-slate-800">
-            {/* Header */}
-            <header className="bg-white text-slate-800 shadow-sm sticky top-0 z-50">
-                <div className="bg-gradient-to-r from-[#008a3e] to-[#00b050] h-1.5 w-full"></div>
-                <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3 md:gap-4">
-                        <div className="bg-white rounded-full p-1 w-12 h-12 md:w-14 md:h-14 flex-shrink-0 overflow-hidden shadow-sm border border-gray-100">
-                            <img src={logoUrl} alt="Logo Movida SST" className="w-full h-full object-cover" />
-                        </div>
-                        <div>
-                            <h1 className="text-lg md:text-2xl font-bold leading-tight text-gray-800">La Movida de SST</h1>
-                            <p className="text-[#00b050] text-xs md:text-sm font-medium italic">De la reacción a la prevención</p>
-                        </div>
-                    </div>
-                    
-                    {/* Canal WhatsApp Destacado en Header */}
-                    <div className="flex items-center gap-3">
-                         <a 
-                            href="https://whatsapp.com/channel/0029Va0mlH5Jf05mrcCz8r3e" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="flex items-center gap-2 text-sm font-bold text-white hover:bg-[#008a3e] transition-colors bg-[#00b050] px-4 py-2 rounded-full shadow-md hover:shadow-lg"
-                        >
-                            <MessageCircle size={18} />
-                            <span className="hidden md:inline">Únete al Canal WhatsApp</span>
-                            <span className="md:hidden">Canal</span>
-                        </a>
-                    </div>
+        /* Ocultar barra de desplazamiento en navegación pero permitir scroll */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-white text-slate-800 shadow-sm sticky top-0 z-50">
+        <div class="bg-gradient-to-r from-[#008a3e] to-[#00b050] h-1.5 w-full"></div>
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3 md:gap-4">
+                <div class="bg-white rounded-full p-1 w-12 h-12 md:w-14 md:h-14 flex-shrink-0 overflow-hidden shadow-sm border border-gray-100">
+                    <img src="https://assets.poap.xyz/f7d50791-1f25-47f7-978c-b2c9fd7ad13d.png" alt="Logo Movida SST" class="w-full h-full object-cover" />
                 </div>
-                
-                {/* Navigation */}
-                <nav className="bg-white border-b border-gray-200 overflow-x-auto scrollbar-hide">
-                    <div className="container mx-auto px-2">
-                        <div className="flex md:justify-center space-x-1 min-w-max p-1">
-                            <NavButton active={activeTab === 'inicio'} onClick={() => setActiveTab('inicio')} icon={<Home size={18} />} label="Inicio" />
-                            <NavButton active={activeTab === 'que-son'} onClick={() => setActiveTab('que-son')} icon={<HelpCircle size={18} />} label="¿Qué son?" />
-                            <NavButton active={activeTab === 'no-es'} onClick={() => setActiveTab('no-es')} icon={<XCircle size={18} />} label="Lo que NO es" />
-                            <NavButton active={activeTab === 'funciones'} onClick={() => setActiveTab('funciones')} icon={<ClipboardList size={18} />} label="Funciones" />
-                            <NavButton active={activeTab === 'cronograma'} onClick={() => setActiveTab('cronograma')} icon={<Calendar size={18} />} label="Cronograma" />
-                            <NavButton active={activeTab === 'derechos'} onClick={() => setActiveTab('derechos')} icon={<Shield size={18} />} label="Derechos" />
-                            <NavButton active={activeTab === 'elecciones'} onClick={() => setActiveTab('elecciones')} icon={<CheckSquare size={18} />} label="Elecciones" />
-                            <NavButton active={activeTab === 'calculadora'} onClick={() => setActiveTab('calculadora')} icon={<Calculator size={18} />} label="Calculadora" />
-                        </div>
-                    </div>
-                </nav>
-            </header>
+                <div>
+                    <h1 class="text-lg md:text-2xl font-bold leading-tight text-gray-800">La Movida de SST</h1>
+                    <p class="text-[#00b050] text-xs md:text-sm font-medium italic">De la reacción a la prevención</p>
+                </div>
+            </div>
+            
+            <!-- Canal WhatsApp -->
+            <div class="flex items-center gap-3">
+                 <a href="https://whatsapp.com/channel/0029Va0mlH5Jf05mrcCz8r3e" target="_blank" rel="noopener noreferrer" 
+                    class="flex items-center gap-2 text-sm font-bold text-white hover:bg-[#008a3e] transition-colors bg-[#00b050] px-4 py-2 rounded-full shadow-md hover:shadow-lg">
+                    <i data-lucide="message-circle" width="18" height="18"></i>
+                    <span class="hidden md:inline">Únete al Canal WhatsApp</span>
+                    <span class="md:hidden">Canal</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="bg-white border-b border-gray-200 overflow-x-auto scrollbar-hide">
+            <div class="container mx-auto px-2">
+                <div class="flex md:justify-center space-x-1 min-w-max p-1" id="nav-container">
+                    <button onclick="switchTab('inicio')" id="btn-inicio" class="nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg bg-[#00b050] text-white shadow-md">
+                        <i data-lucide="home" width="18"></i> Inicio
+                    </button>
+                    <button onclick="switchTab('que-son')" id="btn-que-son" class="nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]">
+                        <i data-lucide="help-circle" width="18"></i> ¿Qué son?
+                    </button>
+                    <button onclick="switchTab('no-es')" id="btn-no-es" class="nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]">
+                        <i data-lucide="x-circle" width="18"></i> Lo que NO es
+                    </button>
+                    <button onclick="switchTab('funciones')" id="btn-funciones" class="nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]">
+                        <i data-lucide="clipboard-list" width="18"></i> Funciones
+                    </button>
+                    <button onclick="switchTab('cronograma')" id="btn-cronograma" class="nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]">
+                        <i data-lucide="calendar" width="18"></i> Cronograma
+                    </button>
+                    <button onclick="switchTab('derechos')" id="btn-derechos" class="nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]">
+                        <i data-lucide="shield" width="18"></i> Derechos
+                    </button>
+                    <button onclick="switchTab('elecciones')" id="btn-elecciones" class="nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]">
+                        <i data-lucide="check-square" width="18"></i> Elecciones
+                    </button>
+                    <button onclick="switchTab('dictamenes')" id="btn-dictamenes" class="nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]">
+                        <i data-lucide="file-text" width="18"></i> Dictámenes
+                    </button>
+                    <button onclick="switchTab('calculadora')" id="btn-calculadora" class="nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]">
+                        <i data-lucide="calculator" width="18"></i> Calculadora
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-            {/* Main Content */}
-            <main className="flex-grow container mx-auto px-4 py-8 md:py-12">
-                {renderContent()}
-            </main>
-
-            {/* Footer */}
-            <footer className="bg-[#1a1a1a] text-gray-300 pt-12 pb-8 mt-auto">
-                <div className="container mx-auto px-4">
-                    
-                    {/* Top Footer: Links & Resources */}
-                    <div className="grid md:grid-cols-3 gap-8 mb-10 text-center md:text-left">
-                        <div>
-                            <h4 className="text-white font-bold text-lg mb-4 border-b border-[#00b050] inline-block pb-1">Recursos Oficiales</h4>
-                            <ul className="space-y-3">
-                                <li>
-                                    <a 
-                                        href="https://www.inpsaseletica.gob.ve/pagina%20web%202/guia_ddp.html" 
-                                        target="_blank" 
-                                        rel="noopener noreferrer" 
-                                        className="flex items-center justify-center md:justify-start gap-2 hover:text-[#00b050] transition-colors group"
-                                    >
-                                        <FileDown size={16} className="text-[#00b050] group-hover:scale-110 transition-transform" />
-                                        Guía Técnica INPSASEL
-                                    </a>
-                                </li>
-                                <li>
-                                    <a 
-                                        href="https://www.movidasst.com" 
-                                        target="_blank" 
-                                        rel="noopener noreferrer" 
-                                        className="flex items-center justify-center md:justify-start gap-2 hover:text-[#00b050] transition-colors group"
-                                    >
-                                        <Globe size={16} className="text-[#00b050] group-hover:scale-110 transition-transform" />
-                                        Web Movida SST
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div className="flex flex-col items-center">
-                            <h4 className="text-white font-bold text-lg mb-4">Comunidad</h4>
-                            <p className="text-sm mb-4 max-w-xs text-center">Mantente al día con las últimas noticias y normativas de seguridad laboral.</p>
-                            <a 
-                                href="https://whatsapp.com/channel/0029Va0mlH5Jf05mrcCz8r3e" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-3 rounded-full transition-all transform hover:scale-105 shadow-lg font-medium"
-                            >
-                                <MessageCircle size={20} /> Ir al Canal WhatsApp
-                            </a>
-                        </div>
-
-                        <div className="text-center md:text-right">
-                            <h4 className="text-white font-bold text-lg mb-4 border-b border-[#00b050] inline-block pb-1">Marco Legal</h4>
-                            <p className="text-sm text-gray-400">
-                                Contenido basado estrictamente en la <strong className="text-gray-300">LOPCYMAT</strong> y su <strong className="text-gray-300">Reglamento Parcial</strong>.
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 md:py-12">
+        
+        <!-- SECCIÓN: INICIO -->
+        <div id="tab-inicio" class="tab-content block">
+            <div class="text-center max-w-5xl mx-auto animate-fade-in">
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-8 border border-gray-100 group">
+                    <div class="bg-gradient-to-br from-[#00b050] to-[#008a3e] p-12 text-white relative overflow-hidden">
+                        <div class="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
+                        <div class="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-black opacity-5 rounded-full blur-2xl"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="inline-block p-3 bg-white/10 rounded-full mb-4 backdrop-blur-sm">
+                                <i data-lucide="shield" width="48" height="48" class="text-white"></i>
+                            </div>
+                            <h2 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Delegado de Prevención</h2>
+                            <p class="text-xl md:text-2xl opacity-90 font-light max-w-2xl mx-auto">
+                                Guía Interactiva para la elección y funciones de la figura clave en seguridad laboral.
                             </p>
                         </div>
                     </div>
                     
-                    {/* Bottom Footer: Copyright & Author */}
-                    <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-                        <p className="text-gray-500">
-                            © 2025 La Movida de SST DAO Network.
+                    <div class="p-8 md:p-12">
+                        <p class="text-gray-600 text-lg mb-10 leading-relaxed max-w-3xl mx-auto">
+                            Esta herramienta tiene como objetivo informar a todos los trabajadores sobre sus derechos y deberes en la elección de sus representantes.
+                            <br/>
+                            <span class="text-[#00b050] font-bold text-xl block mt-2">"La prevención es tarea de todos"</span>
                         </p>
-                        <div className="flex items-center gap-2 bg-gray-900 px-4 py-2 rounded-lg border border-gray-800 shadow-sm hover:border-[#00b050] transition-colors">
-                            <span className="text-gray-400">Elaborado por:</span>
-                            <span className="text-[#00b050] font-bold">David Linares Brea</span>
+                        
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <button onclick="switchTab('que-son')" class="p-6 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center group border border-gray-100 hover:border-[#00b050]">
+                                <div class="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:bg-[#00b050] transition-colors">
+                                    <i data-lucide="search" width="28" height="28" class="text-[#00b050] group-hover:text-white transition-colors"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-lg mb-2">¿Quiénes son?</h3>
+                                <p class="text-gray-500 text-sm">Definición y perfil del delegado ideal.</p>
+                            </button>
+
+                            <button onclick="switchTab('cronograma')" class="p-6 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center group border border-gray-100 hover:border-[#00b050]">
+                                <div class="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:bg-[#00b050] transition-colors">
+                                    <i data-lucide="calendar" width="28" height="28" class="text-[#00b050] group-hover:text-white transition-colors"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-lg mb-2">Cronograma</h3>
+                                <p class="text-gray-500 text-sm">Organización del tiempo y tareas.</p>
+                            </button>
+
+                            <button onclick="switchTab('no-es')" class="p-6 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center group border border-gray-100 hover:border-[#00b050]">
+                                <div class="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:bg-[#00b050] transition-colors">
+                                    <i data-lucide="x-circle" width="28" height="28" class="text-[#00b050] group-hover:text-white transition-colors"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-800 text-lg mb-2">Lo que NO es</h3>
+                                <p class="text-gray-500 text-sm">Aclarando dudas sobre el rol.</p>
+                            </button>
                         </div>
                     </div>
                 </div>
-            </footer>
+            </div>
         </div>
-    );
-};
 
-// Sub-componentes para secciones
-
-const NavButton = ({ active, onClick, icon, label }) => (
-    <button 
-        onClick={onClick}
-        className={`px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg
-        ${active 
-            ? 'bg-[#00b050] text-white shadow-md' 
-            : 'text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]'}`}
-    >
-        {icon} {label}
-    </button>
-);
-
-const HomeSection = ({ setActiveTab }) => (
-    <div className="text-center max-w-5xl mx-auto animate-fade-in">
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8 border border-gray-100 group">
-            <div className="bg-gradient-to-br from-[#00b050] to-[#008a3e] p-12 text-white relative overflow-hidden">
-                {/* Decorative Elements */}
-                <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-40 h-40 bg-black opacity-5 rounded-full blur-2xl"></div>
-                
-                <div className="relative z-10">
-                    <div className="inline-block p-3 bg-white/10 rounded-full mb-4 backdrop-blur-sm">
-                        <Shield size={48} className="text-white" />
+        <!-- SECCIÓN: QUE SON -->
+        <div id="tab-que-son" class="tab-content hidden">
+            <div class="grid md:grid-cols-2 gap-8 items-start animate-fade-in">
+                <div class="bg-white p-8 rounded-2xl shadow-lg border-l-8 border-[#00b050]">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                        <i data-lucide="users" class="text-[#00b050]"></i> ¿Qué son?
+                    </h2>
+                    <p class="text-gray-600 text-lg mb-6 leading-relaxed">
+                        Son los <strong>representantes de los trabajadores y trabajadoras</strong>, elegidos por y entre estos, por medios democráticos, con atribuciones específicas en materia de Seguridad y Salud en el Trabajo.
+                    </p>
+                    
+                    <div class="bg-[#e6f7ee] rounded-xl p-6 border border-[#00b050]/20">
+                        <h4 class="font-bold text-[#00b050] text-lg mb-3 flex items-center gap-2">
+                            <i data-lucide="shield" width="20"></i> Misión Principal
+                        </h4>
+                        <p class="text-gray-800 font-medium">
+                            Promoción y defensa de la seguridad y salud en el trabajo.
+                        </p>
+                        <p class="text-gray-600 mt-2 text-sm">
+                            Ejercen una labor de vigilancia y control social sobre las condiciones de medio ambiente de trabajo.
+                        </p>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Delegado de Prevención</h2>
-                    <p className="text-xl md:text-2xl opacity-90 font-light max-w-2xl mx-auto">
-                        Guía Interactiva para la elección y funciones de la figura clave en seguridad laboral.
+                    <p class="text-xs text-gray-400 mt-6 font-mono text-right">Base Legal: Art. 41 LOPCYMAT / Art. 49 Reglamento.</p>
+                </div>
+
+                <div class="flex flex-col gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300 border-t-4 border-gray-200">
+                        <h3 class="font-bold text-lg text-gray-800 mb-3 flex items-center gap-2">
+                            <i data-lucide="alert-triangle" class="text-orange-500" width="20"></i> ¿Quiénes NO pueden serlo?
+                        </h3>
+                        <ul class="space-y-2 text-gray-600 text-sm">
+                            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">×</span> Representantes del patrono.</li>
+                            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">×</span> Empleados de dirección.</li>
+                            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">×</span> Trabajadores de confianza.</li>
+                            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">×</span> Parientes cercanos del patrono (hasta 4° grado).</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-[#00b050] p-6 rounded-xl shadow-lg text-white relative overflow-hidden">
+                        <div class="absolute right-0 bottom-0 w-32 h-32 bg-white opacity-10 rounded-full -mb-10 -mr-10"></div>
+                        <h3 class="font-bold text-lg mb-2 flex items-center gap-2">
+                            <i data-lucide="check-square" width="20"></i> Requisitos
+                        </h3>
+                        <p class="opacity-90">Cualquier trabajador (excepto los mencionados arriba) mayor de 14 años puede postularse y ser electo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: NO ES -->
+        <div id="tab-no-es" class="tab-content hidden">
+            <div class="max-w-5xl mx-auto animate-fade-in">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-3 flex items-center justify-center gap-3">
+                        <i data-lucide="x-circle" class="text-red-500" width="32" height="32"></i> Lo que NO es un Delegado
+                    </h2>
+                    <p class="text-gray-500">Aclarando conceptos para una gestión eficiente y sin conflictos.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <!-- Delegado Sindical vs Delegado Prevención -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-red-500">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="briefcase" class="text-gray-500"></i> No es un Delegado Sindical
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-bold text-blue-800 text-sm mb-1">Delegado Sindical</h4>
+                                <p class="text-xs text-gray-600">Vela por beneficios socioeconómicos, contratos colectivos, salarios y cláusulas laborales.</p>
+                            </div>
+                            <div class="bg-[#e6f7ee] p-4 rounded-lg">
+                                <h4 class="font-bold text-[#00b050] text-sm mb-1">Delegado de Prevención</h4>
+                                <p class="text-xs text-gray-600">Vela por condiciones seguras, medio ambiente de trabajo, salud física y mental, prevención de accidentes.</p>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-4 italic">Fuente: Dictamen INPSASEL N° 004-2008</p>
+                    </div>
+
+                    <!-- Roles erróneos -->
+                    <div class="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-orange-500">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="user-x" class="text-gray-500"></i> Roles Erróneos
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-red-100 text-red-600 p-1 rounded-full"><i data-lucide="x-circle" width="16"></i></span>
+                                <span class="text-gray-600 text-sm"><strong>No es un policía:</strong> No está para sancionar o vigilar a sus compañeros, sino para promover la seguridad.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-red-100 text-red-600 p-1 rounded-full"><i data-lucide="x-circle" width="16"></i></span>
+                                <span class="text-gray-600 text-sm"><strong>No es mantenimiento:</strong> No es su función reparar máquinas o limpiar áreas personalmente, sino reportar y exigir que se haga.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-red-100 text-red-600 p-1 rounded-full"><i data-lucide="x-circle" width="16"></i></span>
+                                <span class="text-gray-600 text-sm"><strong>No es prevencionista designado:</strong> No sustituye al Servicio de Seguridad y Salud, trabaja en conjunto pero con autonomía.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 text-center">
+                    <p class="text-blue-800 font-medium text-lg">
+                        "El Delegado de Prevención es un <span class="font-bold">líder positivo</span> que busca transformar el ambiente de trabajo para proteger la vida y salud de todos."
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: FUNCIONES -->
+        <div id="tab-funciones" class="tab-content hidden">
+            <div class="max-w-6xl mx-auto animate-fade-in">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-3">Atribuciones y Facultades</h2>
+                    <p class="text-gray-500">¿Qué hace un Delegado de Prevención?</p>
+                    <div class="h-1 w-24 bg-[#00b050] mx-auto rounded-full mt-4"></div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Card 1 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 group">
+                        <div class="text-[#00b050] mb-4 bg-[#e6f7ee] w-14 h-14 flex items-center justify-center rounded-2xl group-hover:bg-[#00b050] group-hover:text-white transition-all duration-300">
+                            <i data-lucide="users" width="28"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Constituir el CSSL</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Junto a los representantes del empleador.</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 group">
+                        <div class="text-[#00b050] mb-4 bg-[#e6f7ee] w-14 h-14 flex items-center justify-center rounded-2xl group-hover:bg-[#00b050] group-hover:text-white transition-all duration-300">
+                            <i data-lucide="file-text" width="28"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Recibir Denuncias</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">De los trabajadores sobre condiciones inseguras.</p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 group">
+                        <div class="text-[#00b050] mb-4 bg-[#e6f7ee] w-14 h-14 flex items-center justify-center rounded-2xl group-hover:bg-[#00b050] group-hover:text-white transition-all duration-300">
+                            <i data-lucide="hard-hat" width="28"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Promover Seguridad</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Fomentar la cooperación en normas de seguridad.</p>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 group">
+                        <div class="text-[#00b050] mb-4 bg-[#e6f7ee] w-14 h-14 flex items-center justify-center rounded-2xl group-hover:bg-[#00b050] group-hover:text-white transition-all duration-300">
+                            <i data-lucide="eye" width="28"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Vigilancia</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Visitar lugares de trabajo y áreas de descanso.</p>
+                    </div>
+                    <!-- Card 5 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 group">
+                        <div class="text-[#00b050] mb-4 bg-[#e6f7ee] w-14 h-14 flex items-center justify-center rounded-2xl group-hover:bg-[#00b050] group-hover:text-white transition-all duration-300">
+                            <i data-lucide="hand-metal" width="28"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Demandar Mejoras</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Solicitar medidas preventivas al empleador.</p>
+                    </div>
+                    <!-- Card 6 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 group">
+                        <div class="text-[#00b050] mb-4 bg-[#e6f7ee] w-14 h-14 flex items-center justify-center rounded-2xl group-hover:bg-[#00b050] group-hover:text-white transition-all duration-300">
+                            <i data-lucide="lock" width="28"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Acceso a Datos</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Información sobre condiciones de trabajo.</p>
+                    </div>
+                    <!-- Card 7 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 group">
+                        <div class="text-[#00b050] mb-4 bg-[#e6f7ee] w-14 h-14 flex items-center justify-center rounded-2xl group-hover:bg-[#00b050] group-hover:text-white transition-all duration-300">
+                            <i data-lucide="clipboard-list" width="28"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Informes</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Presentar reportes mensuales al INPSASEL.</p>
+                    </div>
+                    <!-- Card 8 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 group">
+                        <div class="text-[#00b050] mb-4 bg-[#e6f7ee] w-14 h-14 flex items-center justify-center rounded-2xl group-hover:bg-[#00b050] group-hover:text-white transition-all duration-300">
+                            <i data-lucide="graduation-cap" width="28"></i>
+                        </div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-800">Formación</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">Promover la capacitación continua.</p>
+                    </div>
+                </div>
+                <p class="text-center text-gray-400 mt-12 text-xs font-mono">Base Legal: Arts. 42-43 LOPCYMAT / Arts. 50-51 Reglamento.</p>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: CRONOGRAMA -->
+        <div id="tab-cronograma" class="tab-content hidden">
+            <div class="max-w-5xl mx-auto animate-fade-in">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-3 flex items-center justify-center gap-3">
+                        <i data-lucide="calendar" class="text-[#00b050]" width="32" height="32"></i> Cronograma de Trabajo
+                    </h2>
+                    <p class="text-gray-500">La planificación es clave para una gestión exitosa.</p>
+                </div>
+
+                <div class="bg-[#e6f7ee] p-6 rounded-xl border border-[#00b050]/30 mb-8 flex items-start gap-4">
+                    <i data-lucide="clock" class="text-[#00b050] mt-1 flex-shrink-0" width="24"></i>
+                    <div>
+                        <h3 class="font-bold text-[#00b050] text-lg">Tiempo Remunerado (Licencia)</h3>
+                        <p class="text-gray-700 mt-1">
+                            Según el <strong>Art. 44 de la LOPCYMAT</strong> y el <strong>Art. 54 del Reglamento</strong>, el tiempo utilizado para ejercer tus funciones y recibir formación se considera parte de la jornada efectiva de trabajo. Debes presentar tu cronograma al CSSL para coordinar estas horas.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Mensual -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
+                        <h3 class="font-bold text-xl text-gray-800 mb-4 text-center">Mensual</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-2 text-sm text-gray-600">
+                                <i data-lucide="check-square" width="16" class="text-blue-500"></i> Reunión Ordinaria del CSSL.
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-gray-600">
+                                <i data-lucide="check-square" width="16" class="text-blue-500"></i> Entrega de Informe de Actividades al INPSASEL (Art. 52 Reglamento).
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-gray-600">
+                                <i data-lucide="check-square" width="16" class="text-blue-500"></i> Recorrido/Inspección por áreas de trabajo.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Trimestral -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-purple-500">
+                        <h3 class="font-bold text-xl text-gray-800 mb-4 text-center">Trimestral</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-2 text-sm text-gray-600">
+                                <i data-lucide="check-square" width="16" class="text-purple-500"></i> Revisión de estadísticas de accidentes.
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-gray-600">
+                                <i data-lucide="check-square" width="16" class="text-purple-500"></i> Seguimiento al Programa de Seguridad y Salud.
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-gray-600">
+                                <i data-lucide="check-square" width="16" class="text-purple-500"></i> Participación en planes de formación (16 horas min).
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Permanente -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
+                        <h3 class="font-bold text-xl text-gray-800 mb-4 text-center">Permanente</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-2 text-sm text-gray-600">
+                                <i data-lucide="check-square" width="16" class="text-orange-500"></i> Atención de denuncias de trabajadores.
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-gray-600">
+                                <i data-lucide="check-square" width="16" class="text-orange-500"></i> Vigilancia de condiciones inseguras.
+                            </li>
+                            <li class="flex items-center gap-2 text-sm text-gray-600">
+                                <i data-lucide="check-square" width="16" class="text-orange-500"></i> Promoción de la salud laboral.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: DERECHOS -->
+        <div id="tab-derechos" class="tab-content hidden">
+            <div class="space-y-8 animate-fade-in max-w-5xl mx-auto">
+                <div class="bg-white rounded-2xl p-8 shadow-xl border-l-8 border-[#00b050] flex flex-col md:flex-row gap-8 items-center">
+                    <div class="bg-[#e6f7ee] p-6 rounded-full text-[#00b050] flex-shrink-0">
+                        <i data-lucide="shield" width="56" height="56"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-3">Inamovilidad Laboral</h2>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Protección especial contra despidos, traslados o desmejoras sin justa causa calificada.
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-3">
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Desde la elección</span>
+                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Hasta 3 meses después de vencido el periodo</span>
+                        </div>
+                        <p class="text-xs mt-4 text-[#00b050] font-mono">Art. 44 LOPCYMAT</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Licencia -->
+                    <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition border-t-4 border-blue-500 relative overflow-hidden">
+                        <div class="absolute top-4 right-4 text-blue-100">
+                            <i data-lucide="clock" width="64" height="64"></i>
+                        </div>
+                        <h3 class="font-bold text-xl text-gray-800 mb-3 relative z-10">Licencia Remunerada</h3>
+                        <p class="text-gray-600 relative z-10">
+                            El tiempo invertido en funciones y formación se considera parte de la jornada efectiva de trabajo. Si es fuera de horario, se compensa con descanso.
+                        </p>
+                    </div>
+
+                    <!-- Formación -->
+                    <div class="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition border-t-4 border-orange-500 relative overflow-hidden">
+                        <div class="absolute top-4 right-4 text-orange-100">
+                            <i data-lucide="graduation-cap" width="64" height="64"></i>
+                        </div>
+                        <h3 class="font-bold text-xl text-gray-800 mb-3 relative z-10">Formación Continua</h3>
+                        <p class="text-gray-600 relative z-10">
+                            El empleador tiene la obligación de facilitar los medios y la formación necesaria en seguridad y salud.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: ELECCIONES -->
+        <div id="tab-elecciones" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto animate-fade-in">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Ruta de Elección</h2>
+                    <p class="text-gray-500 max-w-xl mx-auto">Un proceso democrático, libre y secreto garantizado por la ley.</p>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- Step 1 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex gap-6 items-center hover:shadow-md transition-shadow">
+                        <div class="flex-shrink-0 w-12 h-12 bg-[#00b050] text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg shadow-green-200">1</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Notificación al Inspector</h3>
+                            <p class="text-gray-600 text-sm">Los trabajadores notifican su voluntad de elegir delegados. Se activa la inamovilidad.</p>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex gap-6 items-center hover:shadow-md transition-shadow">
+                        <div class="flex-shrink-0 w-12 h-12 bg-[#00b050] text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg shadow-green-200">2</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Comisión Electoral</h3>
+                            <p class="text-gray-600 text-sm">En Asamblea de Trabajadores se elige la Comisión que organizará todo. (Sin el patrono).</p>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex gap-6 items-center hover:shadow-md transition-shadow">
+                        <div class="flex-shrink-0 w-12 h-12 bg-[#00b050] text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg shadow-green-200">3</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Postulaciones</h3>
+                            <p class="text-gray-600 text-sm">Cualquier trabajador elegible puede postularse libremente.</p>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex gap-6 items-center hover:shadow-md transition-shadow">
+                        <div class="flex-shrink-0 w-12 h-12 bg-[#00b050] text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg shadow-green-200">4</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Votación</h3>
+                            <p class="text-gray-600 text-sm">Elección directa y secreta mediante boletas y urnas.</p>
+                        </div>
+                    </div>
+                    <!-- Step 5 -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex gap-6 items-center hover:shadow-md transition-shadow">
+                        <div class="flex-shrink-0 w-12 h-12 bg-[#00b050] text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg shadow-green-200">5</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Registro</h3>
+                            <p class="text-gray-600 text-sm">Conteo público de votos y registro de los ganadores ante el INPSASEL.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 bg-[#e6f7ee] rounded-2xl p-8 text-center border border-[#00b050]/30">
+                    <h3 class="text-2xl font-bold text-[#00b050] mb-4">¿Necesitas los formatos oficiales?</h3>
+                    <p class="text-gray-600 mb-6 max-w-lg mx-auto">
+                        Descarga la Guía Técnica completa del INPSASEL con todos los modelos de cartas, boletas y actas necesarias.
+                    </p>
+                    <a href="https://www.inpsaseletica.gob.ve/pagina%20web%202/guia_ddp.html" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-3 bg-[#00b050] hover:bg-[#008a3e] text-white px-8 py-4 rounded-xl text-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <i data-lucide="download" width="24"></i>
+                        Descargar Guía Técnica y Formularios
+                        <i data-lucide="external-link" width="18" class="opacity-70"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: DICTAMENES -->
+        <div id="tab-dictamenes" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto animate-fade-in">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-3 flex items-center justify-center gap-3">
+                        <i data-lucide="file-scale" class="text-[#00b050]" width="32" height="32"></i> Dictámenes e Interpretaciones
+                    </h2>
+                    <p class="text-gray-500">Criterios oficiales del INPSASEL para la correcta aplicación de la norma.</p>
+                </div>
+
+                <div class="grid gap-6">
+                    <!-- Dictamen 004-2008 -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-8 border-[#00b050] hover:shadow-lg transition-all group">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <div class="flex items-center gap-2 text-sm text-[#00b050] font-bold mb-1">
+                                    <i data-lucide="calendar" width="14"></i> 28 de Febrero 2008
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Dictamen Nº 004-2008</h3>
+                                <p class="text-gray-600 mb-2">Convergencia de roles: Delegados o Delegadas Sindicales electos como Delegados o Delegadas de Prevención.</p>
+                            </div>
+                            <a href="https://drive.google.com/uc?id=1qnC8youGkKSEwrXAaliuJEp8P6ezvfG5&export=download" target="_blank" class="flex-shrink-0 flex items-center gap-2 bg-gray-50 hover:bg-[#00b050] text-gray-700 hover:text-white px-4 py-2 rounded-lg transition-colors border border-gray-200 font-medium">
+                                <i data-lucide="download" width="18"></i> Descargar
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Interpretación Art 44 -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-8 border-blue-500 hover:shadow-lg transition-all group">
+                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <div class="flex items-center gap-2 text-sm text-blue-500 font-bold mb-1">
+                                    <i data-lucide="book-open" width="14"></i> Interpretación Legal
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Interpretación del Artículo 44 LOPCYMAT</h3>
+                                <p class="text-gray-600 mb-2">Alcance de la protección especial e inamovilidad laboral para los Delegados de Prevención.</p>
+                            </div>
+                            <a href="https://drive.google.com/uc?id=1yuBrI7QEuBCDFUdIyb5XbkSi31cUGRMn&export=download" target="_blank" class="flex-shrink-0 flex items-center gap-2 bg-gray-50 hover:bg-blue-500 text-gray-700 hover:text-white px-4 py-2 rounded-lg transition-colors border border-gray-200 font-medium">
+                                <i data-lucide="download" width="18"></i> Descargar
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Dictamen 008-2008 -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-8 border-[#00b050] hover:shadow-lg transition-all group">
+                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <div class="flex items-center gap-2 text-sm text-[#00b050] font-bold mb-1">
+                                    <i data-lucide="calendar" width="14"></i> 11 de Abril de 2008
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">Dictamen Nº 008-2008</h3>
+                                <p class="text-gray-600 mb-2">Interpretación del Artículo 54 del Reglamento Parcial: Tiempo de licencia remunerada para el ejercicio de funciones.</p>
+                            </div>
+                            <a href="https://drive.google.com/uc?id=1yuBrI7QEuBCDFUdIyb5XbkSi31cUGRMn&export=download" target="_blank" class="flex-shrink-0 flex items-center gap-2 bg-gray-50 hover:bg-[#00b050] text-gray-700 hover:text-white px-4 py-2 rounded-lg transition-colors border border-gray-200 font-medium">
+                                <i data-lucide="download" width="18"></i> Descargar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: CALCULADORA -->
+        <div id="tab-calculadora" class="tab-content hidden">
+            <div class="max-w-4xl mx-auto animate-fade-in">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Calculadora de Delegados</h2>
+                <div class="bg-white rounded-2xl shadow-xl p-8 text-center border-t-8 border-[#00b050]">
+                    <div class="mb-8">
+                        <label class="block text-gray-700 text-lg font-semibold mb-2">
+                            Ingrese el número total de trabajadores en el centro de trabajo:
+                        </label>
+                        <input 
+                            type="number" 
+                            id="workersInput"
+                            class="w-full max-w-xs px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-[#00b050] focus:ring-2 focus:ring-[#00b050]/20 focus:outline-none text-3xl text-center mx-auto block transition-all font-bold text-[#00b050]"
+                            placeholder="0"
+                            min="1"
+                        />
+                    </div>
+                    
+                    <div id="resultContainer" class="hidden">
+                        <div class="bg-[#e6f7ee] p-8 rounded-xl border border-[#00b050]/30 animate-pulse shadow-inner">
+                            <p class="text-gray-600 mb-2 text-lg">Según el Artículo 41 de la LOPCYMAT, corresponden:</p>
+                            <div id="delegatesResult" class="text-7xl font-extrabold text-[#00b050] mb-2">0</div>
+                            <p class="text-2xl text-gray-800 font-medium">Delegados(as) de Prevención</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 text-left bg-gray-50 p-6 rounded-xl text-sm text-gray-600 border border-gray-200">
+                        <h4 class="font-bold mb-3 text-[#00b050] text-lg border-b border-gray-200 pb-2">Regla legal (Art. 41 LOPCYMAT):</h4>
+                        <ul class="list-disc list-inside space-y-2 marker:text-[#00b050] text-base">
+                            <li>Hasta 10 trabajadores: <span class="font-semibold">1 Delegado.</span></li>
+                            <li>De 11 a 50 trabajadores: <span class="font-semibold">2 Delegados.</span></li>
+                            <li>De 51 a 250 trabajadores: <span class="font-semibold">3 Delegados.</span></li>
+                            <li>De 251 en adelante: <span class="font-semibold">1 adicional por cada 500 o fracción.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#1a1a1a] text-gray-300 pt-12 pb-8 mt-auto">
+        <div class="container mx-auto px-4">
+            <!-- Top Footer -->
+            <div class="grid md:grid-cols-3 gap-8 mb-10 text-center md:text-left">
+                <div>
+                    <h4 class="text-white font-bold text-lg mb-4 border-b border-[#00b050] inline-block pb-1">Recursos Oficiales</h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="https://www.inpsaseletica.gob.ve/pagina%20web%202/guia_ddp.html" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center md:justify-start gap-2 hover:text-[#00b050] transition-colors group">
+                                <i data-lucide="file-down" width="16" class="text-[#00b050] group-hover:scale-110 transition-transform"></i>
+                                Guía Técnica INPSASEL
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.movidasst.com" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center md:justify-start gap-2 hover:text-[#00b050] transition-colors group">
+                                <i data-lucide="globe" width="16" class="text-[#00b050] group-hover:scale-110 transition-transform"></i>
+                                Web Movida SST
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="flex flex-col items-center">
+                    <h4 class="text-white font-bold text-lg mb-4">Comunidad</h4>
+                    <p class="text-sm mb-4 max-w-xs text-center">Mantente al día con las últimas noticias y normativas de seguridad laboral.</p>
+                    <a href="https://whatsapp.com/channel/0029Va0mlH5Jf05mrcCz8r3e" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-3 rounded-full transition-all transform hover:scale-105 shadow-lg font-medium">
+                        <i data-lucide="message-circle" width="20"></i> Ir al Canal WhatsApp
+                    </a>
+                </div>
+
+                <div class="text-center md:text-right">
+                    <h4 class="text-white font-bold text-lg mb-4 border-b border-[#00b050] inline-block pb-1">Marco Legal</h4>
+                    <p class="text-sm text-gray-400">
+                        Contenido basado estrictamente en la <strong class="text-gray-300">LOPCYMAT</strong> y su <strong class="text-gray-300">Reglamento Parcial</strong>.
                     </p>
                 </div>
             </div>
             
-            <div className="p-8 md:p-12">
-                <p className="text-gray-600 text-lg mb-10 leading-relaxed max-w-3xl mx-auto">
-                    Esta herramienta tiene como objetivo informar a todos los trabajadores sobre sus derechos y deberes en la elección de sus representantes.
-                    <br/>
-                    <span className="text-[#00b050] font-bold text-xl block mt-2">"La prevención es tarea de todos"</span>
+            <!-- Bottom Footer -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+                <p class="text-gray-500">
+                    © 2025 La Movida de SST DAO Network.
                 </p>
-                
-                <div className="grid md:grid-cols-3 gap-6">
-                    <button onClick={() => setActiveTab('que-son')} className="p-6 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center group border border-gray-100 hover:border-[#00b050]">
-                        <div className="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:bg-[#00b050] transition-colors">
-                            <Search className="text-[#00b050] group-hover:text-white transition-colors" size={28} />
-                        </div>
-                        <h3 className="font-bold text-gray-800 text-lg mb-2">¿Quiénes son?</h3>
-                        <p className="text-gray-500 text-sm">Definición y perfil del delegado ideal.</p>
-                    </button>
-
-                    <button onClick={() => setActiveTab('cronograma')} className="p-6 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center group border border-gray-100 hover:border-[#00b050]">
-                        <div className="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:bg-[#00b050] transition-colors">
-                            <Calendar className="text-[#00b050] group-hover:text-white transition-colors" size={28} />
-                        </div>
-                        <h3 className="font-bold text-gray-800 text-lg mb-2">Cronograma</h3>
-                        <p className="text-gray-500 text-sm">Organización del tiempo y tareas.</p>
-                    </button>
-
-                    <button onClick={() => setActiveTab('no-es')} className="p-6 bg-gray-50 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center group border border-gray-100 hover:border-[#00b050]">
-                        <div className="bg-white w-16 h-16 mx-auto rounded-full flex items-center justify-center shadow-sm mb-4 group-hover:bg-[#00b050] transition-colors">
-                            <XCircle className="text-[#00b050] group-hover:text-white transition-colors" size={28} />
-                        </div>
-                        <h3 className="font-bold text-gray-800 text-lg mb-2">Lo que NO es</h3>
-                        <p className="text-gray-500 text-sm">Aclarando dudas sobre el rol.</p>
-                    </button>
+                <div class="flex items-center gap-2 bg-gray-900 px-4 py-2 rounded-lg border border-gray-800 shadow-sm hover:border-[#00b050] transition-colors">
+                    <span class="text-gray-400">Elaborado por:</span>
+                    <span class="text-[#00b050] font-bold">David Linares Brea</span>
                 </div>
             </div>
         </div>
-    </div>
-);
+    </footer>
 
-const DefinitionSection = () => (
-    <div className="grid md:grid-cols-2 gap-8 items-start animate-fade-in">
-        <div className="bg-white p-8 rounded-2xl shadow-lg border-l-8 border-[#00b050]">
-            <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                <Users className="text-[#00b050]" /> ¿Qué son?
-            </h2>
-            <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                Son los <strong>representantes de los trabajadores y trabajadoras</strong>, elegidos por y entre estos, por medios democráticos, con atribuciones específicas en materia de Seguridad y Salud en el Trabajo.
-            </p>
+    <!-- Scripts Logic -->
+    <script>
+        // Inicializar iconos de Lucide
+        lucide.createIcons();
+
+        // Lógica de Tabs
+        function switchTab(tabId) {
+            // 1. Ocultar todos los contenidos
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('block');
+            });
+
+            // 2. Mostrar el seleccionado
+            const selected = document.getElementById('tab-' + tabId);
+            if(selected) {
+                selected.classList.remove('hidden');
+                selected.classList.add('block');
+            }
+
+            // 3. Actualizar estilos de botones
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                // Reset a estilo inactivo
+                btn.className = 'nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg text-gray-600 hover:bg-[#e6f7ee] hover:text-[#00b050]';
+            });
+
+            // Poner estilo activo al botón clickeado
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if(activeBtn) {
+                activeBtn.className = 'nav-btn px-4 py-2.5 text-sm font-medium transition-all duration-200 flex items-center gap-2 rounded-lg bg-[#00b050] text-white shadow-md';
+            }
             
-            <div className="bg-[#e6f7ee] rounded-xl p-6 border border-[#00b050]/20">
-                <h4 className="font-bold text-[#00b050] text-lg mb-3 flex items-center gap-2">
-                    <Shield size={20} /> Misión Principal
-                </h4>
-                <p className="text-gray-800 font-medium">
-                    Promoción y defensa de la seguridad y salud en el trabajo.
-                </p>
-                <p className="text-gray-600 mt-2 text-sm">
-                    Ejercen una labor de vigilancia y control social sobre las condiciones de medio ambiente de trabajo.
-                </p>
-            </div>
-            <p className="text-xs text-gray-400 mt-6 font-mono text-right">Base Legal: Art. 41 LOPCYMAT / Art. 49 Reglamento.</p>
-        </div>
+            // Re-renderizar iconos por si acaso el DOM cambió
+            lucide.createIcons();
+            
+            // Scroll al top en movil
+            if(window.innerWidth < 768) {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            }
+        }
 
-        <div className="flex flex-col gap-6">
-            <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300 border-t-4 border-gray-200">
-                <h3 className="font-bold text-lg text-gray-800 mb-3 flex items-center gap-2">
-                    <AlertTriangle className="text-orange-500" size={20} /> ¿Quiénes NO pueden serlo?
-                </h3>
-                <ul className="space-y-2 text-gray-600 text-sm">
-                    <li className="flex items-start gap-2"><span className="text-red-500 font-bold">×</span> Representantes del patrono.</li>
-                    <li className="flex items-start gap-2"><span className="text-red-500 font-bold">×</span> Empleados de dirección.</li>
-                    <li className="flex items-start gap-2"><span className="text-red-500 font-bold">×</span> Trabajadores de confianza.</li>
-                    <li className="flex items-start gap-2"><span className="text-red-500 font-bold">×</span> Parientes cercanos del patrono (hasta 4° grado).</li>
-                </ul>
-            </div>
+        // Lógica de Calculadora
+        const workersInput = document.getElementById('workersInput');
+        const resultContainer = document.getElementById('resultContainer');
+        const delegatesResult = document.getElementById('delegatesResult');
 
-            <div className="bg-[#00b050] p-6 rounded-xl shadow-lg text-white relative overflow-hidden">
-                <div className="absolute right-0 bottom-0 w-32 h-32 bg-white opacity-10 rounded-full -mb-10 -mr-10"></div>
-                <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-                    <CheckSquare size={20} /> Requisitos
-                </h3>
-                <p className="opacity-90">Cualquier trabajador (excepto los mencionados arriba) mayor de 14 años puede postularse y ser electo.</p>
-            </div>
-        </div>
-    </div>
-);
+        function calculateDelegates(n) {
+            const num = parseInt(n);
+            if (!num || num <= 0) return 0;
+            if (num <= 10) return 1;
+            if (num <= 50) return 2;
+            if (num <= 250) return 3;
+            
+            // De 251 en adelante: 1 adicional por cada 500 o fracción
+            const base = 3;
+            const remaining = num - 250;
+            const additional = Math.ceil(remaining / 500);
+            return base + additional;
+        }
 
-const NotDelegateSection = () => (
-    <div className="max-w-5xl mx-auto animate-fade-in">
-        <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-800 mb-3 flex items-center justify-center gap-3">
-                <XCircle className="text-red-500" size={32} /> Lo que NO es un Delegado
-            </h2>
-            <p className="text-gray-500">Aclarando conceptos para una gestión eficiente y sin conflictos.</p>
-        </div>
+        workersInput.addEventListener('input', (e) => {
+            const val = e.target.value;
+            const result = calculateDelegates(val);
+            
+            if (val > 0) {
+                delegatesResult.innerText = result;
+                resultContainer.classList.remove('hidden');
+            } else {
+                resultContainer.classList.add('hidden');
+            }
+        });
 
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
-            {/* Delegado Sindical vs Delegado Prevención */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-red-500">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <Briefcase className="text-gray-500" /> No es un Delegado Sindical
-                </h3>
-                <div className="space-y-4">
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                        <h4 className="font-bold text-blue-800 text-sm mb-1">Delegado Sindical</h4>
-                        <p className="text-xs text-gray-600">Vela por beneficios socioeconómicos, contratos colectivos, salarios y cláusulas laborales.</p>
-                    </div>
-                    <div className="bg-[#e6f7ee] p-4 rounded-lg">
-                        <h4 className="font-bold text-[#00b050] text-sm mb-1">Delegado de Prevención</h4>
-                        <p className="text-xs text-gray-600">Vela por condiciones seguras, medio ambiente de trabajo, salud física y mental, prevención de accidentes.</p>
-                    </div>
-                </div>
-                <p className="text-xs text-gray-400 mt-4 italic">Fuente: Dictamen INPSASEL N° 004-2008</p>
-            </div>
-
-            {/* Roles erróneos */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg border-l-4 border-orange-500">
-                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <UserX className="text-gray-500" /> Roles Erróneos
-                </h3>
-                <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
-                        <span className="bg-red-100 text-red-600 p-1 rounded-full"><XCircle size={16} /></span>
-                        <span className="text-gray-600 text-sm"><strong>No es un policía:</strong> No está para sancionar o vigilar a sus compañeros, sino para promover la seguridad.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                        <span className="bg-red-100 text-red-600 p-1 rounded-full"><XCircle size={16} /></span>
-                        <span className="text-gray-600 text-sm"><strong>No es mantenimiento:</strong> No es su función reparar máquinas o limpiar áreas personalmente, sino reportar y exigir que se haga.</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                        <span className="bg-red-100 text-red-600 p-1 rounded-full"><XCircle size={16} /></span>
-                        <span className="text-gray-600 text-sm"><strong>No es prevencionista designado:</strong> No sustituye al Servicio de Seguridad y Salud, trabaja en conjunto pero con autonomía.</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 text-center">
-            <p className="text-blue-800 font-medium text-lg">
-                "El Delegado de Prevención es un <span className="font-bold">líder positivo</span> que busca transformar el ambiente de trabajo para proteger la vida y salud de todos."
-            </p>
-        </div>
-    </div>
-);
-
-const ScheduleSection = () => (
-    <div className="max-w-5xl mx-auto animate-fade-in">
-        <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-800 mb-3 flex items-center justify-center gap-3">
-                <Calendar className="text-[#00b050]" size={32} /> Cronograma de Trabajo
-            </h2>
-            <p className="text-gray-500">La planificación es clave para una gestión exitosa.</p>
-        </div>
-
-        <div className="bg-[#e6f7ee] p-6 rounded-xl border border-[#00b050]/30 mb-8 flex items-start gap-4">
-            <Clock className="text-[#00b050] mt-1 flex-shrink-0" size={24} />
-            <div>
-                <h3 className="font-bold text-[#00b050] text-lg">Tiempo Remunerado (Licencia)</h3>
-                <p className="text-gray-700 mt-1">
-                    Según el <strong>Art. 44 de la LOPCYMAT</strong> y el <strong>Art. 54 del Reglamento</strong>, el tiempo utilizado para ejercer tus funciones y recibir formación se considera parte de la jornada efectiva de trabajo. Debes presentar tu cronograma al CSSL para coordinar estas horas.
-                </p>
-            </div>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-            {/* Actividades Mensuales */}
-            <div className="bg-white p-6 rounded-xl shadow-md border-t-4 border-blue-500">
-                <h3 className="font-bold text-xl text-gray-800 mb-4 text-center">Mensual</h3>
-                <ul className="space-y-3">
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckSquare size={16} className="text-blue-500" /> Reunión Ordinaria del CSSL.
-                    </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckSquare size={16} className="text-blue-500" /> Entrega de Informe de Actividades al INPSASEL (Art. 52 Reglamento).
-                    </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckSquare size={16} className="text-blue-500" /> Recorrido/Inspección por áreas de trabajo.
-                    </li>
-                </ul>
-            </div>
-
-            {/* Actividades Trimestrales */}
-            <div className="bg-white p-6 rounded-xl shadow-md border-t-4 border-purple-500">
-                <h3 className="font-bold text-xl text-gray-800 mb-4 text-center">Trimestral</h3>
-                <ul className="space-y-3">
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckSquare size={16} className="text-purple-500" /> Revisión de estadísticas de accidentes.
-                    </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckSquare size={16} className="text-purple-500" /> Seguimiento al Programa de Seguridad y Salud.
-                    </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckSquare size={16} className="text-purple-500" /> Participación en planes de formación (16 horas min).
-                    </li>
-                </ul>
-            </div>
-
-            {/* Actividades Permanentes */}
-            <div className="bg-white p-6 rounded-xl shadow-md border-t-4 border-orange-500">
-                <h3 className="font-bold text-xl text-gray-800 mb-4 text-center">Permanente</h3>
-                <ul className="space-y-3">
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckSquare size={16} className="text-orange-500" /> Atención de denuncias de trabajadores.
-                    </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckSquare size={16} className="text-orange-500" /> Vigilancia de condiciones inseguras.
-                    </li>
-                    <li className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckSquare size={16} className="text-orange-500" /> Promoción de la salud laboral.
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-);
-
-const FunctionsSection = () => (
-    <div className="max-w-6xl mx-auto animate-fade-in">
-        <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-3">Atribuciones y Facultades</h2>
-            <p className="text-gray-500">¿Qué hace un Delegado de Prevención?</p>
-            <div className="h-1 w-24 bg-[#00b050] mx-auto rounded-full mt-4"></div>
-        </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-                { icon: <Users />, title: 'Constituir el CSSL', desc: 'Junto a los representantes del empleador.' },
-                { icon: <FileText />, title: 'Recibir Denuncias', desc: 'De los trabajadores sobre condiciones inseguras.' },
-                { icon: <HardHat />, title: 'Promover Seguridad', desc: 'Fomentar la cooperación en normas de seguridad.' },
-                { icon: <Eye />, title: 'Vigilancia', desc: 'Visitar lugares de trabajo y áreas de descanso.' },
-                { icon: <HandMetal />, title: 'Demandar Mejoras', desc: 'Solicitar medidas preventivas al empleador.' },
-                { icon: <Lock />, title: 'Acceso a Datos', desc: 'Información sobre condiciones de trabajo.' },
-                { icon: <ClipboardList />, title: 'Informes', desc: 'Presentar reportes mensuales al INPSASEL.' },
-                { icon: <GraduationCap />, title: 'Formación', desc: 'Promover la capacitación continua.' }
-            ].map((item, idx) => (
-                <div key={idx} className="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border border-gray-100 group">
-                    <div className="text-[#00b050] mb-4 bg-[#e6f7ee] w-14 h-14 flex items-center justify-center rounded-2xl group-hover:bg-[#00b050] group-hover:text-white transition-all duration-300">
-                        {React.cloneElement(item.icon, { size: 28 })}
-                    </div>
-                    <h3 className="font-bold text-lg mb-2 text-gray-800">{item.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
-                </div>
-            ))}
-        </div>
-        <p className="text-center text-gray-400 mt-12 text-xs font-mono">Base Legal: Arts. 42-43 LOPCYMAT / Arts. 50-51 Reglamento.</p>
-    </div>
-);
-
-const RightsSection = () => (
-    <div className="space-y-8 animate-fade-in max-w-5xl mx-auto">
-        {/* Hero Right */}
-        <div className="bg-white rounded-2xl p-8 shadow-xl border-l-8 border-[#00b050] flex flex-col md:flex-row gap-8 items-center">
-            <div className="bg-[#e6f7ee] p-6 rounded-full text-[#00b050] flex-shrink-0">
-                <Shield size={56} />
-            </div>
-            <div>
-                <h2 className="text-3xl font-bold text-gray-800 mb-3">Inamovilidad Laboral</h2>
-                <p className="text-gray-600 text-lg leading-relaxed">
-                    Protección especial contra despidos, traslados o desmejoras sin justa causa calificada.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-3">
-                    <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Desde la elección</span>
-                    <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Hasta 3 meses después de vencido el periodo</span>
-                </div>
-                <p className="text-xs mt-4 text-[#00b050] font-mono">Art. 44 LOPCYMAT</p>
-            </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-            {/* Time License */}
-            <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition border-t-4 border-blue-500 relative overflow-hidden">
-                <div className="absolute top-4 right-4 text-blue-100">
-                    <Clock size={64} />
-                </div>
-                <h3 className="font-bold text-xl text-gray-800 mb-3 relative z-10">Licencia Remunerada</h3>
-                <p className="text-gray-600 relative z-10">
-                    El tiempo invertido en funciones y formación se considera parte de la jornada efectiva de trabajo. Si es fuera de horario, se compensa con descanso.
-                </p>
-            </div>
-
-            {/* Training Right */}
-            <div className="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition border-t-4 border-orange-500 relative overflow-hidden">
-                <div className="absolute top-4 right-4 text-orange-100">
-                    <GraduationCap size={64} />
-                </div>
-                <h3 className="font-bold text-xl text-gray-800 mb-3 relative z-10">Formación Continua</h3>
-                <p className="text-gray-600 relative z-10">
-                    El empleador tiene la obligación de facilitar los medios y la formación necesaria en seguridad y salud.
-                </p>
-            </div>
-        </div>
-    </div>
-);
-
-const ElectionSection = () => (
-    <div className="max-w-4xl mx-auto animate-fade-in">
-        <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Ruta de Elección</h2>
-            <p className="text-gray-500 max-w-xl mx-auto">Un proceso democrático, libre y secreto garantizado por la ley.</p>
-        </div>
-        
-        <div className="space-y-6">
-            {[
-                { 
-                    step: 1, 
-                    title: "Notificación al Inspector", 
-                    content: "Los trabajadores notifican su voluntad de elegir delegados. Se activa la inamovilidad." 
-                },
-                { 
-                    step: 2, 
-                    title: "Comisión Electoral", 
-                    content: "En Asamblea de Trabajadores se elige la Comisión que organizará todo. (Sin el patrono)." 
-                },
-                { 
-                    step: 3, 
-                    title: "Postulaciones", 
-                    content: "Cualquier trabajador elegible puede postularse libremente." 
-                },
-                { 
-                    step: 4, 
-                    title: "Votación", 
-                    content: "Elección directa y secreta mediante boletas y urnas." 
-                },
-                { 
-                    step: 5, 
-                    title: "Registro", 
-                    content: "Conteo público de votos y registro de los ganadores ante el INPSASEL." 
-                }
-            ].map((item, index) => (
-                <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex gap-6 items-center hover:shadow-md transition-shadow">
-                    <div className="flex-shrink-0 w-12 h-12 bg-[#00b050] text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg shadow-green-200">
-                        {item.step}
-                    </div>
-                    <div>
-                        <h3 className="text-lg font-bold text-gray-800">{item.title}</h3>
-                        <p className="text-gray-600 text-sm">{item.content}</p>
-                    </div>
-                </div>
-            ))}
-        </div>
-
-        {/* Call to Action - Download Guide */}
-        <div className="mt-12 bg-[#e6f7ee] rounded-2xl p-8 text-center border border-[#00b050]/30">
-            <h3 className="text-2xl font-bold text-[#00b050] mb-4">¿Necesitas los formatos oficiales?</h3>
-            <p className="text-gray-600 mb-6 max-w-lg mx-auto">
-                Descarga la Guía Técnica completa del INPSASEL con todos los modelos de cartas, boletas y actas necesarias.
-            </p>
-            <a 
-                href="https://www.inpsaseletica.gob.ve/pagina%20web%202/guia_ddp.html" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 bg-[#00b050] hover:bg-[#008a3e] text-white px-8 py-4 rounded-xl text-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-            >
-                <Download size={24} />
-                Descargar Guía Técnica y Formularios
-                <ExternalLink size={18} className="opacity-70" />
-            </a>
-        </div>
-    </div>
-);
-
-export default App;
+    </script>
+</body>
+</html>
